@@ -9,6 +9,7 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
+import { BACKEND_API_URL } from "../../constants";
 // import { BACKEND_API_URL } from "../../constants";
 
 export const BookDelete = () => {
@@ -17,7 +18,7 @@ export const BookDelete = () => {
 
   const handleDelete = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    await axios.delete(`http://127.0.0.1:8000/books/${bookId}`);
+    await axios.delete(`${BACKEND_API_URL}/books/${bookId}`);
     navigate("/books");
   };
 

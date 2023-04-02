@@ -7,6 +7,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Book } from "../../models/Book";
 import { PublishedBooks } from "../../models/PublisherBooks";
+import { BACKEND_API_URL } from "../../constants";
 
 export const BooksDetail = () => {
   const { bookId } = useParams();
@@ -19,7 +20,7 @@ export const BooksDetail = () => {
       // TODO: use axios instead of fetch
       // TODO: handle errors
       // TODO: handle loading stat
-      const response = await fetch(`http://127.0.0.1:8000/books/${bookId}`);
+      const response = await fetch(`${BACKEND_API_URL}/books/${bookId}`);
       const book = await response.json();
       console.log(book);
       setBook(book);

@@ -22,6 +22,7 @@ import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
+import { BACKEND_API_URL } from "../../constants";
 
 export const BooksShowAll = () => {
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export const BooksShowAll = () => {
     event.preventDefault();
     // navigate("/books");
     setLoading(true);
-    fetch(`http://127.0.0.1:8000/books/?min_copies_sold=${filter}`)
+    fetch(`${BACKEND_API_URL}/books/?min_copies_sold=${filter}`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
@@ -43,7 +44,7 @@ export const BooksShowAll = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://127.0.0.1:8000/books")
+    fetch(`${BACKEND_API_URL}/books`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);

@@ -21,6 +21,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
 import { Book } from "../../models/Book";
 import { Author } from "../../models/Author";
+import { BACKEND_API_URL } from "../../constants";
 
 export const BooksEdit = () => {
   const { bookId } = useParams();
@@ -41,7 +42,7 @@ export const BooksEdit = () => {
       // TODO: use axios instead of fetch
       // TODO: handle errors
       // TODO: handle loading stat
-      const response = await fetch(`http://127.0.0.1:8000/books/${bookId}`);
+      const response = await fetch(`${BACKEND_API_URL}/books/${bookId}`);
       const book = await response.json();
       console.log(book);
       setBook(book);
@@ -54,7 +55,7 @@ export const BooksEdit = () => {
     try {
       console.log("it tries at least");
       console.log(book);
-      await axios.put(`http://127.0.0.1:8000/books/${bookId}`, book);
+      await axios.put(`${BACKEND_API_URL}/books/${bookId}`, book);
       navigate("/books");
     } catch (error) {
       console.log(error);
@@ -64,7 +65,7 @@ export const BooksEdit = () => {
   const [author, setAuthor] = useState<Author[]>([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/authors")
+    fetch(`${BACKEND_API_URL}/authors`)
       .then((res) => res.json())
       .then((data) => setAuthor(data));
   }, []);
