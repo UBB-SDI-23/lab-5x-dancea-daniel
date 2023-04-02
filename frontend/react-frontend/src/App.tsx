@@ -6,6 +6,11 @@ import React from "react";
 import { BooksShowAll } from "./components/books/BooksShowAll";
 import { BooksDetail } from "./components/books/BooksDetail";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BooksAdd } from "./components/books/BooksAdd";
+import { BookDelete } from "./components/books/BooksDelete";
+import { BooksEdit } from "./components/books/BooksEdit";
+import { AppHome } from "./components/App/AppHome";
+import { AppMenu } from "./components/App/AppMenu";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -13,9 +18,14 @@ function App() {
   return (
     <React.Fragment>
       <Router>
+        <AppMenu />
         <Routes>
+          <Route path="/" element={<AppHome />} />
           <Route path="/books/" element={<BooksShowAll />} />
+          <Route path="/books/add" element={<BooksAdd />} />
           <Route path="/books/:bookId/details" element={<BooksDetail />} />
+          <Route path="/books/:bookId/edit" element={<BooksEdit />} />
+          <Route path="/books/:bookId/delete" element={<BookDelete />} />
         </Routes>
 
         {/* <div className="App">

@@ -6,22 +6,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Book } from "../../models/Book";
+import { PublishedBooks } from "../../models/PublisherBooks";
 
 export const BooksDetail = () => {
   const { bookId } = useParams();
   const [book, setBook] = useState<Book>();
   const [loading, setLoading] = useState(false);
-
-  //   useEffect(() => {
-  //     setLoading(true);
-  //     fetch("http://127.0.0.1:8000/books")
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         setBooks(data);
-  //         console.log(data);
-  //         setLoading(false);
-  //       });
-  //   }, []);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -48,15 +38,18 @@ export const BooksDetail = () => {
           <p>Book Name: {book?.name}</p>
           <p>Book Description: {book?.description}</p>
           <p>
-            Book Author Name: {book?.author?.first_name}{" "}
-            {book?.author?.last_name}
+            Author Name: {book?.author?.first_name} {book?.author?.last_name}
           </p>
-          {/* <p>Course students:</p>
+          <p>Copies Sold: {book?.copies_sold}</p>
+          <p>Publishing history:</p>
           <ul>
-            {course?.students?.map((student) => (
-              <li key={student.id}>{student.name}</li>
+            {book?.published_in?.map((data: PublishedBooks) => (
+              <li>
+                Published in: {data.publisher.name} in the year {data.year} with
+                the price: {data.price}$
+              </li>
             ))}
-          </ul> */}
+          </ul>
         </CardContent>
         <CardActions>
           <IconButton

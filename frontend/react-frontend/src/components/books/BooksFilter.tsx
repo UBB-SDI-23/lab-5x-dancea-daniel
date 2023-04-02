@@ -15,8 +15,6 @@ import {
   Container,
   IconButton,
   Tooltip,
-  TextField,
-  Button,
 } from "@mui/material";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
@@ -26,20 +24,6 @@ import AddIcon from "@mui/icons-material/Add";
 export const BooksShowAll = () => {
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
-
-  const [filter, setFilter] = useState(0);
-
-  const handleFilter = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    // navigate("/books");
-    setLoading(true);
-    fetch(`http://127.0.0.1:8000/books/?min_copies_sold=${filter}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBooks(data);
-        setLoading(false);
-      });
-  };
 
   useEffect(() => {
     setLoading(true);
@@ -58,27 +42,11 @@ export const BooksShowAll = () => {
       {loading && <CircularProgress />}
       {!loading && books.length === 0 && <p>No books found</p>}
       {!loading && (
-        <IconButton component={Link} sx={{ mr: 0 }} to={`/books/add`}>
+        <IconButton component={Link} sx={{ mr: 3 }} to={`/books/add`}>
           <Tooltip title="Add a new book" arrow>
             <AddIcon color="primary" />
           </Tooltip>
         </IconButton>
-      )}
-      {!loading && (
-        <form onSubmit={handleFilter}>
-          <TextField
-            id="name"
-            label="Min copies sold"
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 2 }}
-            onChange={(event) => setFilter(Number(event.target.value))}
-          />
-          <Button type="submit">Use filter</Button>
-          <Button type="submit" onClick={(event) => setFilter(0)}>
-            Reset Filter
-          </Button>
-        </form>
       )}
       {!loading && books.length > 0 && (
         <TableContainer component={Paper}>
@@ -86,8 +54,8 @@ export const BooksShowAll = () => {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Description</TableCell>
+                <TableCell align="right">Name</TableCell>
+                <TableCell align="right">Description</TableCell>
                 {/* <TableCell align="right">Teacher Name</TableCell> */}
                 <TableCell align="center">Operations</TableCell>
               </TableRow>
@@ -101,19 +69,20 @@ export const BooksShowAll = () => {
                   <TableCell component="th" scope="row">
                     <Link
                       to={`/books/${book.id}/details`}
-                      title="View book details"
+                      title="View course details"
                     >
                       {book.name}
                     </Link>
                   </TableCell>
-                  <TableCell align="left">{book.description}</TableCell>
-                  <TableCell align="left">
+                  <TableCell align="right">{book.description}</TableCell>
+                  {/* <TableCell align="right">{course.teacher?.name}</TableCell> */}
+                  <TableCell align="right">
                     <IconButton
                       component={Link}
                       sx={{ mr: 3 }}
                       to={`/books/${book.id}/details`}
                     >
-                      <Tooltip title="View book details" arrow>
+                      <Tooltip title="View course details" arrow>
                         <ReadMoreIcon color="primary" />
                       </Tooltip>
                     </IconButton>
@@ -140,6 +109,21 @@ export const BooksShowAll = () => {
           </Table>
         </TableContainer>
       )}
+
+      {/* <table>
+        <tr>
+          <th>#</th>
+          <th>Book name</th>
+          <th>Publication Date</th>
+        </tr>
+        {books.map((book: Book, index) => (
+          <tr>
+            <td>{index + 1}</td>
+            <td>{book.name}</td>
+            <td>{book.publication_date.toString()}</td>
+          </tr>
+        ))}
+      </table> */}
     </Container>
   );
 };
