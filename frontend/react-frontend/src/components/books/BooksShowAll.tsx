@@ -44,7 +44,7 @@ export const BooksShowAll = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/books`)
+    fetch(`${BACKEND_API_URL}/books/`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
