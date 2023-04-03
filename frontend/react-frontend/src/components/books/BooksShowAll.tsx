@@ -26,6 +26,8 @@ import { BACKEND_API_URL } from "../../constants";
 
 export const BooksShowAll = () => {
   const [loading, setLoading] = useState(false);
+
+  const [sorting, setSorting] = useState(false);
   const [books, setBooks] = useState([]);
 
   const [filter, setFilter] = useState(0);
@@ -38,6 +40,21 @@ export const BooksShowAll = () => {
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
+        setLoading(false);
+      });
+  };
+
+  const handleSort = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    // navigate("/books");
+    setLoading(true);
+    fetch(`${BACKEND_API_URL}/books/`)
+      .then((res) => res.json())
+      .then((data) => {
+        const sorted = data
+          .slice()
+          .sort((a: Book, b: Book) => a.copies_sold - b.copies_sold);
+        setBooks(sorted);
         setLoading(false);
       });
   };
@@ -81,6 +98,14 @@ export const BooksShowAll = () => {
           </Button>
         </form>
       )}
+      {!loading && (
+        <form>
+          <Button onClick={handleSort}>Use sort</Button>
+          {/* <Button type="submit" onClick={(event) => setFilter(0)}>
+            Reset Sort
+          </Button> */}
+        </form>
+      )}
       {!loading && books.length > 0 && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 950 }} aria-label="simple table">
@@ -90,6 +115,7 @@ export const BooksShowAll = () => {
                 <TableCell align="left">Name</TableCell>
                 <TableCell align="left">Description</TableCell>
                 {/* <TableCell align="right">Teacher Name</TableCell> */}
+                <TableCell align="center">Copies_sold</TableCell>
                 <TableCell align="center">Operations</TableCell>
               </TableRow>
             </TableHead>
@@ -108,6 +134,7 @@ export const BooksShowAll = () => {
                     </Link>
                   </TableCell>
                   <TableCell align="left">{book.description}</TableCell>
+                  <TableCell align="left">{book.copies_sold}</TableCell>
                   <TableCell align="left">
                     <IconButton
                       component={Link}
