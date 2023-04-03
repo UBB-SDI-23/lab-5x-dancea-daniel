@@ -65,9 +65,20 @@ export const BooksEdit = () => {
   const [author, setAuthor] = useState<Author[]>([]);
 
   useEffect(() => {
-    fetch(`${BACKEND_API_URL}/authors`)
-      .then((res) => res.json())
-      .then((data) => setAuthor(data));
+    // fetch(`${BACKEND_API_URL}/authors`)
+    //   .then((res) => res.json())
+    //   .then((data) => setAuthor(data));
+    const fetchAuthors = async () => {
+      // console.log("book123");
+      // TODO: use axios instead of fetch
+      // TODO: handle errors
+      // TODO: handle loading stat
+      const response = await fetch(`${BACKEND_API_URL}/authors/`);
+      const data = await response.json();
+      console.log(data);
+      setAuthor(data);
+    };
+    fetchAuthors();
   }, []);
 
   return (
