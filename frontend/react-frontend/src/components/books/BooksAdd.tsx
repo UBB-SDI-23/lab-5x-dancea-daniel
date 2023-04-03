@@ -68,8 +68,9 @@ export const BooksAdd = () => {
               variant="outlined"
               fullWidth
               sx={{ mb: 2 }}
-              onChange={(event) =>
-                setBook({ ...book, name: event.target.value })
+              onChange={
+                (event) => setBook({ ...book, name: event.target.value })
+                // setBook({ ...book, publication_date: new Date(event.target.value).toISOString().substr(0,10) })
               }
             />
             <TextField
@@ -80,6 +81,16 @@ export const BooksAdd = () => {
               sx={{ mb: 2 }}
               onChange={(event) =>
                 setBook({ ...book, description: event.target.value })
+              }
+            />
+            <TextField
+              id="publication_date"
+              label="Publication date(YYYY-MM-DD)"
+              variant="outlined"
+              fullWidth
+              sx={{ mb: 2 }}
+              onChange={(event) =>
+                setBook({ ...book, publication_date: event.target.value })
               }
             />
             <TextField

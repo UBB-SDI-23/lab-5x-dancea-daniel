@@ -38,6 +38,7 @@ export const BooksDetail = () => {
           <h1>Book Details</h1>
           <p>Book Name: {book?.name}</p>
           <p>Book Description: {book?.description}</p>
+          <p>Publication date: {book?.publication_date?.toString()}</p>
           <p>
             Author Name: {book?.author?.first_name} {book?.author?.last_name}
           </p>

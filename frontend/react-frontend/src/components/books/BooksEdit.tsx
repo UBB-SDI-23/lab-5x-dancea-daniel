@@ -99,6 +99,16 @@ export const BooksEdit = () => {
               }
             />
             <TextField
+              id="publication_date"
+              label="Publication Date(YYYY-MM-DD)"
+              variant="outlined"
+              fullWidth
+              sx={{ mb: 2 }}
+              onChange={(event) =>
+                setBook({ ...book, publication_date: event.target.value })
+              }
+            />
+            <TextField
               id="copies_sold"
               label="Copies sold"
               variant="outlined"
