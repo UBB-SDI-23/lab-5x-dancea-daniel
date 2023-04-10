@@ -9,7 +9,7 @@ with open('published_books_data.sql', 'w') as file:
     file.write("""ALTER TABLE "Lab_1_publishedbooks" DROP CONSTRAINT "Lab_1_publishedbooks_book_id_154f3f39_fk_Lab_1_book_id";\n""")
     file.write("""ALTER TABLE "Lab_1_publishedbooks" DROP CONSTRAINT "Lab_1_publishedbooks_publisher_id_310fb1cf_fk_Lab_1_pub";\n""")
 
-    for i in range(1000):
+    for i in range(10000):
         book_id = fake.random_int(min=i * 100 + 1, max=(i + 1) * 100)
         values = []
         for j in range(1000):
