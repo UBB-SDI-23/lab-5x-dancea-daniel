@@ -22,12 +22,12 @@ class book_list(APIView):
         page_obj = paginator.get_page(page_number)
 
         # serialize the paginated objects
-        serializer = BookSerializer(page_obj, many=True)
 
 
         min_copies_sold = self.request.query_params.get('min_copies_sold')
         if min_copies_sold is not None:
-            books = books.filter(copies_sold__gt=min_copies_sold)
+            page_obj = page_obj.filter(copies_sold__gt=min_copies_sold)
+        serializer = BookSerializer(page_obj, many=True)
         bookSerializer = BookSerializer(books, many=True)
         # return Response(bookSerializer.data)
         return Response(serializer.data)
