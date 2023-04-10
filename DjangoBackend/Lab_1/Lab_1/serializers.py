@@ -63,7 +63,7 @@ class AuthorBooksSerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Author
-        fields = ['first_name', 'last_name', 'DOB', 'nationality', 'books_sold', 'books']
+        fields = ['first_name', 'last_name', 'DOB', 'nationality', 'books_sold', 'description' 'books']
 
 
 

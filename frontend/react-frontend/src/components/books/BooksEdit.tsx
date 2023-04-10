@@ -28,13 +28,37 @@ export const BooksEdit = () => {
 
   const navigate = useNavigate();
 
-  const [book, setBook] = useState({
+  const [book, setBook] = useState<Book>({
     name: "",
     description: "",
-    publication_date: new Date("2022-01-01").toISOString().substr(0, 10),
+    publication_date: new Date("2022-01-01"),
     copies_sold: 1,
-    author: 1,
+    author: {
+      id: 1,
+      first_name: "string",
+      last_name: "string",
+      DOB: new Date("2002-2-2"),
+      nationality: "string",
+      books_sold: 1,
+    },
   });
+
+  useEffect(() => {
+    // fetch(`${BACKEND_API_URL}/authors`)
+    //   .then((res) => res.json())
+    //   .then((data) => setAuthor(data));
+    const fetchAuthors = async () => {
+      // console.log("book123");
+      // TODO: use axios instead of fetch
+      // TODO: handle errors
+      // TODO: handle loading stat
+      const response = await fetch(`${BACKEND_API_URL}/authors/`);
+      const data = await response.json();
+      console.log(data);
+      setAuthor(data);
+    };
+    fetchAuthors();
+  }, []);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -55,7 +79,14 @@ export const BooksEdit = () => {
     try {
       console.log("it tries at least");
       console.log(book);
-      await axios.put(`${BACKEND_API_URL}/books/${bookId}`, book);
+      const toSendBook = {
+        name: book.name,
+        description: book.description,
+        publication_date: book.publication_date,
+        copies_sold: book.copies_sold,
+        author: book.author.id,
+      };
+      await axios.put(`${BACKEND_API_URL}/books/${bookId}`, toSendBook);
       navigate("/books");
     } catch (error) {
       console.log(error);
@@ -63,23 +94,6 @@ export const BooksEdit = () => {
   };
 
   const [author, setAuthor] = useState<Author[]>([]);
-
-  useEffect(() => {
-    // fetch(`${BACKEND_API_URL}/authors`)
-    //   .then((res) => res.json())
-    //   .then((data) => setAuthor(data));
-    const fetchAuthors = async () => {
-      // console.log("book123");
-      // TODO: use axios instead of fetch
-      // TODO: handle errors
-      // TODO: handle loading stat
-      const response = await fetch(`${BACKEND_API_URL}/authors/`);
-      const data = await response.json();
-      console.log(data);
-      setAuthor(data);
-    };
-    fetchAuthors();
-  }, []);
 
   return (
     <Container>
@@ -94,6 +108,7 @@ export const BooksEdit = () => {
               label="Name"
               variant="outlined"
               fullWidth
+              value={book.name}
               sx={{ mb: 2 }}
               onChange={(event) =>
                 setBook({ ...book, name: event.target.value })
@@ -104,6 +119,7 @@ export const BooksEdit = () => {
               label="Description"
               variant="outlined"
               fullWidth
+              value={book.description}
               sx={{ mb: 2 }}
               onChange={(event) =>
                 setBook({ ...book, description: event.target.value })
@@ -114,16 +130,18 @@ export const BooksEdit = () => {
               label="Publication Date(YYYY-MM-DD)"
               variant="outlined"
               fullWidth
+              value={book.publication_date}
               sx={{ mb: 2 }}
-              onChange={(event) =>
-                setBook({ ...book, publication_date: event.target.value })
-              }
+              // onChange={(event) =>
+              //   // setBook({ ...book, publication_date: event.target.value. })
+              // }
             />
             <TextField
               id="copies_sold"
               label="Copies sold"
               variant="outlined"
               fullWidth
+              value={book.copies_sold}
               sx={{ mb: 2 }}
               onChange={(event) =>
                 setBook({ ...book, copies_sold: Number(event.target.value) })
@@ -136,15 +154,16 @@ export const BooksEdit = () => {
                 id="author-select"
                 variant="outlined"
                 fullWidth
+                value={book.author.id}
                 sx={{ mb: 2 }}
                 onChange={(event) => {
-                  const authorId = event.target.value as number;
-                  //   const selectedAuthor = author?.find((a) => a.id === authorId);
+                  const selectedAuthor = author.find(
+                    (a) => a.id === event.target.value
+                  ) as Author;
                   setBook((book) => ({
                     ...book,
-                    author: authorId,
+                    author: selectedAuthor,
                   }));
-                  console.log(book);
                 }}
               >
                 {author?.map((a) => (

@@ -16,22 +16,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Lab_1 import views
+from Lab_1.Views import BookView, AuthorView, PublisherView
 from rest_framework.urlpatterns import format_suffix_patterns
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('books/', views.book_list.as_view()),
-    path('books/<int:id>', views.book_detail.as_view()),
-    path('authors/', views.author_list.as_view()),
-    path('authors/<int:id>', views.author_detail.as_view()),
-    path('publishers/', views.publisher_list.as_view()),
-    path('publishers/<int:id>', views.publisher_detail.as_view()),
-    path('published_books/', views.published_books_list.as_view()),
-    path('books/avr-books/', views.AuthorsByAvrBooks.as_view()),
-    path('books/book-sorted/', views.BooksByNrOfBooksByAuthors.as_view()),
-    path('publishers/<int:id>/books/', views.AddBookListToPublisher.as_view()),
+    path('books/', BookView.book_list.as_view()),
+    path('books/<int:id>', BookView.book_detail.as_view()),
+    path('authors/', AuthorView.author_list.as_view()),
+    path('authors/<int:id>', AuthorView.author_detail.as_view()),
+    path('publishers/', PublisherView.publisher_list.as_view()),
+    path('publishers/<int:id>', PublisherView.publisher_detail.as_view()),
+    path('published_books/', PublisherView.published_books_list.as_view()),
+    path('books/avr-books/', PublisherView.AuthorsByAvrBooks.as_view()),
+    path('books/book-sorted/', PublisherView.BooksByNrOfBooksByAuthors.as_view()),
+    path('publishers/<int:id>/books/', PublisherView.AddBookListToPublisher.as_view()),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path('schema/swagger-ui/',
          SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

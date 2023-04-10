@@ -7,6 +7,6 @@ export interface Book {
   description: string;
   copies_sold: number;
   publication_date?: Date;
-  author?: Author;
+  author: Author;
   published_in?: PublishedBooks[];
 }

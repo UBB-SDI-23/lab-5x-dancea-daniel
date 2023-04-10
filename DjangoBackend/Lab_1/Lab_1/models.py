@@ -8,6 +8,7 @@ class Author(models.Model):
     DOB = models.DateField()
     nationality = models.CharField(max_length=200)
     books_sold = models.IntegerField(validators=[MinValueValidator(0)])
+    description = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.first_name + " " + self.last_name
