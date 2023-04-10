@@ -55,7 +55,7 @@ export const BooksShowAll = () => {
     event.preventDefault();
     // navigate("/books");
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/books/`)
+    fetch(`${BACKEND_API_URL}/books/?page=${currentPage}`)
       .then((res) => res.json())
       .then((data) => {
         const sorted = data
