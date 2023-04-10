@@ -71,7 +71,7 @@ export const BooksShowAll = () => {
     fetch(`${BACKEND_API_URL}/books/?page=${currentPage}`)
       .then((res) => res.json())
       .then((data) => {
-        setBooks(data);
+        setBooks(data.results);
         console.log(data);
         setLoading(false);
       });
@@ -82,9 +82,10 @@ export const BooksShowAll = () => {
       setCurrentPage(currentPage + 1);
       console.log(currentPage);
       setLoading(true);
-      fetch(`${BACKEND_API_URL}/books/?page=${currentPage + 1}`)
+      fetch(`${BACKEND_API_URL}/books/?page=4`)
         .then((response) => response.json())
         .then((data) => {
+          console.log(currentPage);
           setBooks(data.results);
           setLoading(false);
         });
