@@ -117,11 +117,11 @@ export const BooksShowAll = () => {
             style={{ marginRight: "370px" }}
             component={Link}
             sx={{ mr: 3 }}
-            to={`/dogs/?p=${currentPage}`}
+            to={`/books/?p=${currentPage}`}
             disabled={currentPage === 1}
           >
             <Tooltip title="Previous">
-              <ArrowBackIosIcon sx={{ color: "white" }} />
+              <ArrowBackIosIcon sx={{ color: "black" }} />
             </Tooltip>
           </IconButton>
           <IconButton component={Link} sx={{ mr: 0 }} to={`/books/add`}>
@@ -134,11 +134,11 @@ export const BooksShowAll = () => {
             onClick={handleNextPage}
             component={Link}
             sx={{ mr: 3 }}
-            to={`/dogs/?p=${currentPage}`}
+            to={`/books/?p=${currentPage}`}
             disabled={currentPage === totalPages}
           >
             <Tooltip title="Next">
-              <ArrowForwardIosIcon sx={{ color: "white" }} />
+              <ArrowForwardIosIcon sx={{ color: "black" }} />
             </Tooltip>
           </IconButton>
         </Toolbar>
