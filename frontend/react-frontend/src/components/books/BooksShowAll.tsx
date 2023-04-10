@@ -68,7 +68,7 @@ export const BooksShowAll = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/books/?p=${currentPage}`)
+    fetch(`${BACKEND_API_URL}/books/?page=${currentPage}`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
@@ -82,7 +82,7 @@ export const BooksShowAll = () => {
       setCurrentPage(currentPage + 1);
       console.log(currentPage);
       setLoading(true);
-      fetch(`${BACKEND_API_URL}/books/?p=${currentPage + 1}`)
+      fetch(`${BACKEND_API_URL}/books/?page=${currentPage + 1}`)
         .then((response) => response.json())
         .then((data) => {
           setBooks(data.results);
@@ -96,7 +96,7 @@ export const BooksShowAll = () => {
       setCurrentPage(currentPage - 1);
       console.log(currentPage);
       setLoading(true);
-      fetch(`${BACKEND_API_URL}/books/?p=${currentPage - 1}`)
+      fetch(`${BACKEND_API_URL}/books/?page=${currentPage - 1}`)
         .then((response) => response.json())
         .then((data) => {
           setBooks(data.results);
@@ -117,7 +117,7 @@ export const BooksShowAll = () => {
             style={{ marginRight: "370px" }}
             component={Link}
             sx={{ mr: 3 }}
-            to={`/books/?p=${currentPage}`}
+            to={`/books/?page=${currentPage}`}
             disabled={currentPage === 1}
           >
             <Tooltip title="Previous">
@@ -134,7 +134,7 @@ export const BooksShowAll = () => {
             onClick={handleNextPage}
             component={Link}
             sx={{ mr: 3 }}
-            to={`/books/?p=${currentPage}`}
+            to={`/books/?page=${currentPage}`}
             disabled={currentPage === totalPages}
           >
             <Tooltip title="Next">
