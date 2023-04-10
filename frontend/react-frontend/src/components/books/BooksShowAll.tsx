@@ -17,12 +17,16 @@ import {
   Tooltip,
   TextField,
   Button,
+  Toolbar,
 } from "@mui/material";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
 import { BACKEND_API_URL } from "../../constants";
+
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 export const BooksShowAll = () => {
   const [loading, setLoading] = useState(false);
@@ -31,6 +35,9 @@ export const BooksShowAll = () => {
   const [books, setBooks] = useState([]);
 
   const [filter, setFilter] = useState(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(1000000 / 100);
 
   const handleFilter = (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -61,7 +68,7 @@ export const BooksShowAll = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/books/`)
+    fetch(`${BACKEND_API_URL}/books/?p=${currentPage}`)
       .then((res) => res.json())
       .then((data) => {
         setBooks(data);
@@ -70,17 +77,71 @@ export const BooksShowAll = () => {
       });
   }, []);
 
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      console.log(currentPage);
+      setLoading(true);
+      fetch(`${BACKEND_API_URL}/books/?p=${currentPage + 1}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setBooks(data.results);
+          setLoading(false);
+        });
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      console.log(currentPage);
+      setLoading(true);
+      fetch(`${BACKEND_API_URL}/books/?p=${currentPage - 1}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setBooks(data.results);
+          setLoading(false);
+        });
+    }
+  };
+
   return (
     <Container>
       <h1>All books</h1>
       {loading && <CircularProgress />}
       {!loading && books.length === 0 && <p>No books found</p>}
       {!loading && (
-        <IconButton component={Link} sx={{ mr: 0 }} to={`/books/add`}>
-          <Tooltip title="Add a new book" arrow>
-            <AddIcon color="primary" />
-          </Tooltip>
-        </IconButton>
+        <Toolbar>
+          <IconButton
+            onClick={handlePrevPage}
+            style={{ marginRight: "370px" }}
+            component={Link}
+            sx={{ mr: 3 }}
+            to={`/dogs/?p=${currentPage}`}
+            disabled={currentPage === 1}
+          >
+            <Tooltip title="Previous">
+              <ArrowBackIosIcon sx={{ color: "white" }} />
+            </Tooltip>
+          </IconButton>
+          <IconButton component={Link} sx={{ mr: 0 }} to={`/books/add`}>
+            <Tooltip title="Add a new book" arrow>
+              <AddIcon color="primary" />
+            </Tooltip>
+          </IconButton>
+          <IconButton
+            style={{ marginLeft: "370px" }}
+            onClick={handleNextPage}
+            component={Link}
+            sx={{ mr: 3 }}
+            to={`/dogs/?p=${currentPage}`}
+            disabled={currentPage === totalPages}
+          >
+            <Tooltip title="Next">
+              <ArrowForwardIosIcon sx={{ color: "white" }} />
+            </Tooltip>
+          </IconButton>
+        </Toolbar>
       )}
       {!loading && (
         <form onSubmit={handleFilter}>
