@@ -71,7 +71,7 @@ export const BooksShowAll = () => {
     fetch(`${BACKEND_API_URL}/books/?page=${currentPage}`)
       .then((res) => res.json())
       .then((data) => {
-        setBooks(data.results);
+        setBooks(data);
         console.log(data);
         setLoading(false);
       });
@@ -82,11 +82,11 @@ export const BooksShowAll = () => {
       setCurrentPage(currentPage + 1);
       console.log(currentPage);
       setLoading(true);
-      fetch(`${BACKEND_API_URL}/books/?page=4`)
+      fetch(`${BACKEND_API_URL}/books/?page=${currentPage + 1}`)
         .then((response) => response.json())
         .then((data) => {
           console.log(currentPage);
-          setBooks(data.results);
+          setBooks(data);
           setLoading(false);
         });
     }
@@ -100,7 +100,7 @@ export const BooksShowAll = () => {
       fetch(`${BACKEND_API_URL}/books/?page=${currentPage - 1}`)
         .then((response) => response.json())
         .then((data) => {
-          setBooks(data.results);
+          setBooks(data);
           setLoading(false);
         });
     }
