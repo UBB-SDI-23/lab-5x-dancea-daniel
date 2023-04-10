@@ -5,7 +5,7 @@ fake = Faker()
 
 with open('books_data.sql', 'w') as file:
     file.write("""TRUNCATE TABLE "Lab_1_book" RESTART IDENTITY CASCADE;\n""")
-    for _ in range(10):
+    for _ in range(1000):
         values = []
         for i in range(1000):
             name = fake.name().replace("'", "''")
