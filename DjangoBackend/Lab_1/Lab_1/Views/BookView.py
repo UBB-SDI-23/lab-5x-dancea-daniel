@@ -15,20 +15,21 @@ from django.core.paginator import Paginator
 class book_list(APIView):
     @extend_schema(request=None, responses=BookSerializer)
     def get(self, request, format=None):
-        books = Book.objects.all()
-
-        paginator = Paginator(books, 100)  # 10 objects per page
+        # books = Book.objects.all().order_by('id')
+        books = Book.objects.annotate(num_published=Count('publisher')).order_by('id')
+        min_copies_sold = self.request.query_params.get('min_copies_sold')
+        if min_copies_sold is not None:
+            books = books.filter(copies_sold__gt=min_copies_sold)
+        #
+        # nrOfPublications = Book.objects.annotate(num_published=Count('books'))
+        paginator = Paginator(books, 10)  # 10 objects per page
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
         # serialize the paginated objects
-
-
-        min_copies_sold = self.request.query_params.get('min_copies_sold')
-        if min_copies_sold is not None:
-            page_obj = page_obj.filter(copies_sold__gt=min_copies_sold)
         serializer = BookSerializer(page_obj, many=True)
-        bookSerializer = BookSerializer(books, many=True)
+
+        # bookSerializer = BookSerializer(books, many=True)
         # return Response(bookSerializer.data)
         return Response(serializer.data)
 
@@ -40,6 +41,8 @@ class book_list(APIView):
         if bookSerializer.is_valid():
             bookSerializer.save()
             return Response(bookSerializer.data, status=status.HTTP_201_CREATED)
+        return Response(bookSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class book_detail(APIView):
@@ -71,3 +74,14 @@ class book_detail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class BooksAutoComple(APIView):
+    @extend_schema(request=None, responses=BookSerializer)
+    def get(self, request):
+        query = request.query_params.get('query', None)
+        if query:
+            books = Book.objects.filter(name__icontains=query).order_by('name')[:10]
+        else:
+            books = Book.objects.all()[:10]
+
+        serialized_books = BookSerializer(books, many=True)
+        return Response(serialized_books.data)

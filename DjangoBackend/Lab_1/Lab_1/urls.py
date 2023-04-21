@@ -22,25 +22,25 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('books/', BookView.book_list.as_view()),
-    path('books/<int:id>', BookView.book_detail.as_view()),
-    path('authors/', AuthorView.author_list.as_view()),
-    path('authors/<int:id>', AuthorView.author_detail.as_view()),
-    path('publishers/', PublisherView.publisher_list.as_view()),
-    path('publishers/<int:id>', PublisherView.publisher_detail.as_view()),
-    path('published_books/', PublisherView.published_books_list.as_view()),
-    path('books/avr-books/', PublisherView.AuthorsByAvrBooks.as_view()),
-    path('books/book-sorted/', PublisherView.BooksByNrOfBooksByAuthors.as_view()),
-    path('publishers/<int:id>/books/', PublisherView.AddBookListToPublisher.as_view()),
-    path("schema/", SpectacularAPIView.as_view(), name="schema"),
-    path('schema/swagger-ui/',
+    path('api/admin/', admin.site.urls),
+    path('api/books/', BookView.book_list.as_view()),
+    path('api/books/autocomplete/', BookView.BooksAutoComple.as_view()),
+    path('api/books/<int:id>', BookView.book_detail.as_view()),
+    path('api/authors/', AuthorView.author_list.as_view()),
+    path('api/authors/autocomplete/', AuthorView.AuthorsAutoComple.as_view()),
+    path('api/authors/<int:id>', AuthorView.author_detail.as_view()),
+    path('api/publishers/', PublisherView.publisher_list.as_view()),
+    path('api/publishers/autocomplete/', PublisherView.PublishersAutoComple.as_view()),
+    path('api/publishers/<int:id>', PublisherView.publisher_detail.as_view()),
+    path('api/published_books/', PublisherView.published_books_list.as_view()),
+    path('api/published_books/<int:bookId>/<int:publisherId>', PublisherView.published_books_detail.as_view()),
+    path('api/author_stats/avr-books/', PublisherView.AuthorsByAvrBooks.as_view()),
+    path('api/publisher_stats/num-books/', PublisherView.BooksByNrOfBooksByAuthors.as_view()),
+    path('api/publishers/<int:id>/books/', PublisherView.AddBookListToPublisher.as_view()),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path('api/schema/swagger-ui/',
          SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # Redoc UI:
-
-    # path('swagger/schema/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-schema')
-
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -10,17 +10,22 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema
-
-
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 class author_list(APIView):
     @extend_schema(request=None, responses=AuthorSerializer)
     def get(self, request, format=None):
-        authors = Author.objects.all()[:100]
-        author_serializer = AuthorSerializer(authors, many=True)
+        # authors = Author.objects.all().order_by('id')
+        authors = Author.objects.annotate(num_book=Count('books')).order_by('id')
+        paginator = Paginator(authors, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        serializer = AuthorSerializer(page_obj, many=True)
 
-        return Response(author_serializer.data)
+        return Response(serializer.data)
+
 
     @extend_schema(request=None, responses=AuthorSerializer)
     def post(self, request, format=None):
@@ -41,7 +46,7 @@ class author_detail(APIView):
     @extend_schema(request=None, responses=AuthorSerializer)
     def get(self, request, id, format=None):
         author = self.get_author_by_id(id)
-        authorSerializer = AuthorSerializer(author)
+        authorSerializer = AuthorBooksSerializer(author)
         return Response(authorSerializer.data)
 
     @extend_schema(request=None, responses=AuthorSerializer)
@@ -58,3 +63,17 @@ class author_detail(APIView):
         author = self.get_author_by_id(id)
         author.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class AuthorsAutoComple(APIView):
+    @extend_schema(request=None, responses=AuthorSerializer)
+    def get(self, request):
+        query = request.query_params.get('query', None)
+        if query:
+            authors = Author.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(
+                first_name__icontains=query.split()[0], last_name__icontains=query.split()[-1]) | Q(
+                first_name__icontains=query.split()[-1], last_name__icontains=query.split()[0]))[:10]
+        else:
+            authors = Author.objects.all()[:10]
+
+        serialized_authors = AuthorSerializer(authors, many=True)
+        return Response(serialized_authors.data)

@@ -28,50 +28,21 @@ import { BACKEND_API_URL } from "../../constants";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-export const BooksShowAll = () => {
+export const AuthorsShowAll = () => {
   const [loading, setLoading] = useState(false);
 
   const [sorting, setSorting] = useState(false);
-  const [books, setBooks] = useState([]);
-
-  const [filter, setFilter] = useState(0);
+  const [authors, setAuthors] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(1000000 / 100);
 
-  const handleFilter = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    // navigate("/books");
-    setLoading(true);
-    fetch(`${BACKEND_API_URL}/books/?min_copies_sold=${filter}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBooks(data);
-        setLoading(false);
-      });
-  };
-
-  const handleSort = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    // navigate("/books");
-    setLoading(true);
-    fetch(`${BACKEND_API_URL}/books/?page=${currentPage}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const sorted = data
-          .slice()
-          .sort((a: Book, b: Book) => a.copies_sold - b.copies_sold);
-        setBooks(sorted);
-        setLoading(false);
-      });
-  };
-
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/books/?page=${currentPage}`)
+    fetch(`${BACKEND_API_URL}/authors/?page=${currentPage}`)
       .then((res) => res.json())
       .then((data) => {
-        setBooks(data);
+        setAuthors(data);
         console.log(data);
         setLoading(false);
       });
@@ -82,11 +53,11 @@ export const BooksShowAll = () => {
       setCurrentPage(currentPage + 1);
       console.log(currentPage);
       setLoading(true);
-      fetch(`${BACKEND_API_URL}/books/?page=${currentPage + 1}`)
+      fetch(`${BACKEND_API_URL}/authors/?page=${currentPage + 1}`)
         .then((response) => response.json())
         .then((data) => {
           console.log(currentPage);
-          setBooks(data);
+          setAuthors(data);
           setLoading(false);
         });
     }
@@ -97,10 +68,10 @@ export const BooksShowAll = () => {
       setCurrentPage(currentPage - 1);
       console.log(currentPage);
       setLoading(true);
-      fetch(`${BACKEND_API_URL}/books/?page=${currentPage - 1}`)
+      fetch(`${BACKEND_API_URL}/authors/?page=${currentPage - 1}`)
         .then((response) => response.json())
         .then((data) => {
-          setBooks(data);
+          setAuthors(data);
           setLoading(false);
         });
     }
@@ -108,9 +79,9 @@ export const BooksShowAll = () => {
 
   return (
     <Container>
-      <h1>All books</h1>
+      <h1>All authors</h1>
       {loading && <CircularProgress />}
-      {!loading && books.length === 0 && <p>No books found</p>}
+      {!loading && authors.length === 0 && <p>No authors found</p>}
       {!loading && (
         <Toolbar>
           <IconButton
@@ -118,15 +89,15 @@ export const BooksShowAll = () => {
             style={{ marginRight: "370px" }}
             component={Link}
             sx={{ mr: 3 }}
-            to={`/books/?page=${currentPage}`}
+            to={`/authors/?page=${currentPage}`}
             disabled={currentPage === 1}
           >
             <Tooltip title="Previous">
               <ArrowBackIosIcon sx={{ color: "black" }} />
             </Tooltip>
           </IconButton>
-          <IconButton component={Link} sx={{ mr: 0 }} to={`/books/add`}>
-            <Tooltip title="Add a new book" arrow>
+          <IconButton component={Link} sx={{ mr: 0 }} to={`/authors/add`}>
+            <Tooltip title="Add a new author" arrow>
               <AddIcon color="primary" />
             </Tooltip>
           </IconButton>
@@ -135,7 +106,7 @@ export const BooksShowAll = () => {
             onClick={handleNextPage}
             component={Link}
             sx={{ mr: 3 }}
-            to={`/books/?page=${currentPage}`}
+            to={`/authors/?page=${currentPage}`}
             disabled={currentPage === totalPages}
           >
             <Tooltip title="Next">
@@ -144,68 +115,37 @@ export const BooksShowAll = () => {
           </IconButton>
         </Toolbar>
       )}
-      {!loading && (
-        <form onSubmit={handleFilter}>
-          <TextField
-            id="name"
-            label="Min copies sold"
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 2 }}
-            onChange={(event) => setFilter(Number(event.target.value))}
-          />
-          <Button type="submit">Use filter</Button>
-          <Button type="submit" onClick={(event) => setFilter(0)}>
-            Reset Filter
-          </Button>
-        </form>
-      )}
-      {!loading && (
-        <form>
-          <Button onClick={handleSort}>Use sort</Button>
-          {/* <Button type="submit" onClick={(event) => setFilter(0)}>
-            Reset Sort
-          </Button> */}
-        </form>
-      )}
-      {!loading && books.length > 0 && (
+      {!loading && authors.length > 0 && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 950 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Description</TableCell>
+                <TableCell align="left">First Name</TableCell>
+                <TableCell align="left">Last Name</TableCell>
                 {/* <TableCell align="right">Teacher Name</TableCell> */}
-                <TableCell align="left">Copies sold</TableCell>
-                <TableCell align="left">
-                  Nunmber of times that have been published
-                </TableCell>
-                <TableCell align="center">Operations</TableCell>
+                <TableCell align="left">Books sold</TableCell>
+                <TableCell align="left">Books Published</TableCell>
+                <TableCell align="right">Operations</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {books.map((book: Book, index) => (
-                <TableRow key={book.id}>
+              {authors.map((author: Author, index) => (
+                <TableRow key={author.id}>
                   <TableCell component="th" scope="row">
                     {index + 1}
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    <Link
-                      to={`/books/${book.id}/details`}
-                      title="View book details"
-                    >
-                      {book.name}
-                    </Link>
+                    {author.first_name}
                   </TableCell>
-                  <TableCell align="left">{book.description}</TableCell>
-                  <TableCell align="left">{book.copies_sold}</TableCell>
-                  <TableCell align="left">{book.num_published}</TableCell>
+                  <TableCell align="left">{author.last_name}</TableCell>
+                  <TableCell align="left">{author.books_sold}</TableCell>
+                  <TableCell align="left">{author.num_book}</TableCell>
                   <TableCell align="right">
                     <IconButton
                       component={Link}
                       sx={{ mr: 3 }}
-                      to={`/books/${book.id}/details`}
+                      to={`/authors/${author.id}/details`}
                     >
                       <Tooltip title="View book details" arrow>
                         <ReadMoreIcon color="primary" />
@@ -215,7 +155,7 @@ export const BooksShowAll = () => {
                     <IconButton
                       component={Link}
                       sx={{ mr: 3 }}
-                      to={`/books/${book.id}/edit`}
+                      to={`/authors/${author.id}/edit`}
                     >
                       <EditIcon />
                     </IconButton>
@@ -223,7 +163,7 @@ export const BooksShowAll = () => {
                     <IconButton
                       component={Link}
                       sx={{ mr: 3 }}
-                      to={`/books/${book.id}/delete`}
+                      to={`/authors/${author.id}/delete`}
                     >
                       <DeleteForeverIcon sx={{ color: "red" }} />
                     </IconButton>

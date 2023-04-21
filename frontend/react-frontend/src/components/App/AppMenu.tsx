@@ -42,6 +42,62 @@ export const AppMenu = () => {
           >
             Books
           </Button>
+          <Button
+            variant={path.startsWith("/authors") ? "outlined" : "text"}
+            to="/authors"
+            component={Link}
+            color="inherit"
+            sx={{ mr: 5 }}
+            startIcon={<LocalLibraryIcon />}
+          >
+            Authors
+          </Button>
+          <Button
+            variant={path.startsWith("/publishers") ? "outlined" : "text"}
+            to="/publishers"
+            component={Link}
+            color="inherit"
+            sx={{ mr: 5 }}
+            startIcon={<LocalLibraryIcon />}
+          >
+            Publishers
+          </Button>
+          <Button
+            variant={path.startsWith("/published_books") ? "outlined" : "text"}
+            to="/published_books"
+            component={Link}
+            color="inherit"
+            sx={{ mr: 5 }}
+            startIcon={<LocalLibraryIcon />}
+          >
+            Published Books
+          </Button>
+          <Button
+            variant={
+              path.startsWith("/author_stats/avr-books") ? "outlined" : "text"
+            }
+            to="/author_stats/avr-books"
+            component={Link}
+            color="inherit"
+            sx={{ mr: 5 }}
+            startIcon={<LocalLibraryIcon />}
+          >
+            Authors Statistics
+          </Button>
+          <Button
+            variant={
+              path.startsWith("/publisher_stats/num-books")
+                ? "outlined"
+                : "text"
+            }
+            to="/publisher_stats/num-books"
+            component={Link}
+            color="inherit"
+            sx={{ mr: 5 }}
+            startIcon={<LocalLibraryIcon />}
+          >
+            Publishers Statistics
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>

@@ -3,7 +3,7 @@ import { Publisher } from "./Publisher";
 
 export interface PublishedBooks {
   year: number;
-  price: number;
+  price: string;
   book: Book;
   publisher: Publisher;
 }

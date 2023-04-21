@@ -11,7 +11,7 @@ with open('author_data.sql', 'w') as file:
             first_name = fake.first_name().replace("'", "''")
             nationality = fake.country().replace("'", "''")
             books_sold = fake.pyint(min_value=1, max_value=1000)
-            DOB = fake.date_between(start_date='-12y', end_date='today')
+            DOB = fake.date_between(start_date='-49y', end_date='-30y')
             description = fake.words(nb=100)
             desc = " ".join(description)
             values.append(f"('{first_name}', '{last_name}', '{DOB}', '{nationality}', {books_sold}, '{desc}')")

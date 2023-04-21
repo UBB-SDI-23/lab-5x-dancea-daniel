@@ -9,9 +9,10 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import { Container } from "@mui/system";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 // import { BACKEND_API_URL } from "../../constants";
 // import { Course } from "../../models/Course";
@@ -22,16 +23,35 @@ import axios from "axios";
 import { Book } from "../../models/Book";
 import { Author } from "../../models/Author";
 import { BACKEND_API_URL } from "../../constants";
+import { debounce } from "lodash";
 
 export const BooksAdd = () => {
   const navigate = useNavigate();
 
-  const [book, setBook] = useState({
+  const [book, setBook] = useState<Book>({
     name: "",
     description: "",
-    publication_date: new Date("2022-01-01").toISOString().substr(0, 10),
+    publication_date: "2022-01-01",
     copies_sold: 1,
-    author: 1,
+    author: {
+      id: 1,
+      first_name: "string",
+      last_name: "string",
+      DOB: "0000-2-2",
+      nationality: "string",
+      books_sold: 1,
+      description: "",
+      books: [],
+    },
+  });
+
+  const [localError, setLocalError] = useState({
+    generic: "",
+    name: "",
+    author: "",
+    publication_date: "",
+    copies_sold: "",
+    description: "",
   });
 
   const addBook = async (event: { preventDefault: () => void }) => {
@@ -39,7 +59,14 @@ export const BooksAdd = () => {
     try {
       console.log("it tries at least");
       console.log(book);
-      await axios.post(`${BACKEND_API_URL}/books/`, book);
+      const toSendBook = {
+        name: book.name,
+        description: book.description,
+        publication_date: book.publication_date,
+        copies_sold: book.copies_sold,
+        author: book.author.id,
+      };
+      await axios.post(`${BACKEND_API_URL}/books/`, toSendBook);
       navigate("/books");
     } catch (error) {
       console.log(error);
@@ -47,22 +74,37 @@ export const BooksAdd = () => {
   };
 
   const [author, setAuthor] = useState<Author[]>([]);
+  const [lastGetAuthorsCall, setLastGetAuthorsCall] = useState<number>(0);
 
+  // function to get all blends based on the query provided
+  const getAuthors = async (authorQuery: string) => {
+    try {
+      const currentLastGetAuthorsCall = lastGetAuthorsCall;
+      setLastGetAuthorsCall((prev) => prev + 1);
+      console.log("giees");
+      console.log(authorQuery);
+      const response = await axios.get(
+        `${BACKEND_API_URL}/authors/autocomplete/?query=${authorQuery}`
+      );
+      const data = await response.data;
+
+      if (currentLastGetAuthorsCall === lastGetAuthorsCall) setAuthor(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // debounce the getBlends function to prevent too many requests
+  const debouncedGetAuthors = useCallback(debounce(getAuthors, 500), []);
   useEffect(() => {
-    // fetch(`${BACKEND_API_URL}/authors`)
-    //   .then((res) => res.json())
-    //   .then((data) => setAuthor(data));
-    const fetchAuthors = async () => {
-      // console.log("book123");
-      // TODO: use axios instead of fetch
-      // TODO: handle errors
-      // TODO: handle loading stat
-      const response = await fetch(`${BACKEND_API_URL}/authors/`);
-      const data = await response.json();
-      console.log(data);
-      setAuthor(data);
+    return () => {
+      debouncedGetAuthors.cancel();
     };
-    fetchAuthors();
+  }, [debouncedGetAuthors]);
+
+  // get some blends when the component mounts
+  useEffect(() => {
+    getAuthors("");
   }, []);
 
   return (
@@ -98,11 +140,40 @@ export const BooksAdd = () => {
               id="publication_date"
               label="Publication date(YYYY-MM-DD)"
               variant="outlined"
+              error={localError.publication_date ? true : false}
+              helperText={localError.publication_date}
               fullWidth
               sx={{ mb: 2 }}
-              onChange={(event) =>
-                setBook({ ...book, publication_date: event.target.value })
-              }
+              onChange={(event) => {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(event.target.value)) {
+                  console.log("yes");
+                  setLocalError({
+                    ...localError,
+                    publication_date: "Enter valid date",
+                  });
+                } else if (
+                  Number(event.target.value.substring(0, 4)) <
+                  Number(book.author.DOB?.substring(0, 4))
+                ) {
+                  setLocalError({
+                    ...localError,
+                    publication_date:
+                      "The year entered must be after the date of birth of the author",
+                  });
+                } else if (Number(event.target.value.substring(0, 4)) > 2023)
+                  setLocalError({
+                    ...localError,
+                    publication_date:
+                      "The year entered must be before the current year",
+                  });
+                else {
+                  setLocalError({
+                    ...localError,
+                    publication_date: "",
+                  });
+                }
+                setBook({ ...book, publication_date: event.target.value });
+              }}
             />
             <TextField
               id="copies_sold"
@@ -110,35 +181,49 @@ export const BooksAdd = () => {
               variant="outlined"
               fullWidth
               sx={{ mb: 2 }}
-              onChange={(event) =>
-                setBook({ ...book, copies_sold: Number(event.target.value) })
-              }
+              error={localError.copies_sold ? true : false}
+              helperText={localError.copies_sold}
+              onChange={(event) => {
+                if (Number(event.target.value) < 0) {
+                  setLocalError({
+                    ...localError,
+                    copies_sold:
+                      "The number of copies must be a positive number",
+                  });
+                } else if (!/^\d+$/.test(event.target.value)) {
+                  setLocalError({
+                    ...localError,
+                    copies_sold: "Enter a valid number",
+                  });
+                } else {
+                  setLocalError({
+                    ...localError,
+                    copies_sold: "",
+                  });
+                }
+                setBook({ ...book, copies_sold: Number(event.target.value) });
+              }}
             />
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel id="author-select-label">Author</InputLabel>
-              <Select
-                labelId="author-select-label"
-                id="author-select"
-                variant="outlined"
-                fullWidth
-                sx={{ mb: 2 }}
-                onChange={(event) => {
-                  const authorId = event.target.value as number;
-                  //   const selectedAuthor = author?.find((a) => a.id === authorId);
-                  setBook((book) => ({
-                    ...book,
-                    author: authorId,
-                  }));
-                  console.log(book);
-                }}
-              >
-                {author?.map((a) => (
-                  <MenuItem key={a.id} value={a.id}>
-                    {a.first_name} {a.last_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              disableClearable={true}
+              options={author}
+              filterOptions={(x) => x}
+              getOptionLabel={(option) =>
+                option.first_name + " " + option.last_name
+              }
+              onInputChange={(e, value) => debouncedGetAuthors(value)}
+              renderInput={(params) => (
+                <TextField {...params} label="Author" variant="outlined" />
+              )}
+              onChange={(e, value) => {
+                if (value) {
+                  console.log(value.id);
+                  setBook({ ...book, author: value });
+                }
+              }}
+              disablePortal
+              className="autocomplete-blend"
+            />
             <Button type="submit">Add Book</Button>
           </form>
         </CardContent>
