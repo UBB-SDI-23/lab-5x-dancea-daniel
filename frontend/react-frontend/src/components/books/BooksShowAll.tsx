@@ -18,6 +18,9 @@ import {
   TextField,
   Button,
   Toolbar,
+  Pagination,
+  Stack,
+  PaginationItem,
 } from "@mui/material";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
@@ -37,7 +40,7 @@ export const BooksShowAll = () => {
   const [filter, setFilter] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(1000000 / 100);
+  const totalPages = Math.ceil(1000000 / 10);
 
   const handleFilter = (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -77,6 +80,28 @@ export const BooksShowAll = () => {
       });
   }, []);
 
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+
+    setLoading(true);
+    fetch(`${BACKEND_API_URL}/books/?page=${newPage}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setBooks(data);
+        setLoading(false);
+      });
+  };
+
+  const pageNumbers = [];
+  for (
+    let i = Math.max(1, currentPage - 2);
+    i <= Math.min(totalPages, currentPage + 2);
+    i++
+  ) {
+    pageNumbers.push(i);
+  }
+
+  console.log(pageNumbers);
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -113,7 +138,43 @@ export const BooksShowAll = () => {
       {!loading && books.length === 0 && <p>No books found</p>}
       {!loading && (
         <Toolbar>
-          <IconButton
+          <div>
+            {currentPage > 1 && (
+              <button onClick={() => handlePageChange(currentPage - 1)}>
+                Previous
+              </button>
+            )}
+            {pageNumbers[0] > 1 && (
+              <>
+                <button onClick={() => handlePageChange(1)}>1</button>
+                {pageNumbers[0] > 2 && <span>...</span>}
+              </>
+            )}
+            {pageNumbers.map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
+              <>
+                {pageNumbers[pageNumbers.length - 1] < totalPages - 2 && (
+                  <span>...</span>
+                )}
+                <button onClick={() => handlePageChange(totalPages)}>
+                  {totalPages}
+                </button>
+              </>
+            )}
+            {currentPage < totalPages && (
+              <button onClick={() => handlePageChange(currentPage + 1)}>
+                Next
+              </button>
+            )}
+          </div>
+          {/* <IconButton
             onClick={handlePrevPage}
             style={{ marginRight: "370px" }}
             component={Link}
@@ -124,13 +185,13 @@ export const BooksShowAll = () => {
             <Tooltip title="Previous">
               <ArrowBackIosIcon sx={{ color: "black" }} />
             </Tooltip>
-          </IconButton>
+          </IconButton> */}
           <IconButton component={Link} sx={{ mr: 0 }} to={`/books/add`}>
             <Tooltip title="Add a new book" arrow>
               <AddIcon color="primary" />
             </Tooltip>
           </IconButton>
-          <IconButton
+          {/* <IconButton
             style={{ marginLeft: "370px" }}
             onClick={handleNextPage}
             component={Link}
@@ -141,7 +202,7 @@ export const BooksShowAll = () => {
             <Tooltip title="Next">
               <ArrowForwardIosIcon sx={{ color: "black" }} />
             </Tooltip>
-          </IconButton>
+          </IconButton> */}
         </Toolbar>
       )}
       {!loading && (
