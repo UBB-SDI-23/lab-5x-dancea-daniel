@@ -83,10 +83,7 @@ export const PublisherYearStatistics = () => {
 
   return (
     <Container>
-      <h1>
-        Publishers with more than 5 published book with an estabileshment date
-        later than 1928
-      </h1>
+      <h1>Publishers with an estabileshment date later than 1928</h1>
       {loading && <CircularProgress />}
       {!loading && publishers.length === 0 && <p>No publishers found</p>}
       {!loading && (
