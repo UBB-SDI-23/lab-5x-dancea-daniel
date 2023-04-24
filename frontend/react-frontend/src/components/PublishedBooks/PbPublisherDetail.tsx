@@ -1,4 +1,10 @@
-import { Card, CardActions, CardContent, IconButton } from "@mui/material";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CircularProgress,
+  IconButton,
+} from "@mui/material";
 import { Container } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -18,6 +24,7 @@ export const PbPublishersDetail = () => {
 
   useEffect(() => {
     const fetchPublisher = async () => {
+      setLoading(true);
       console.log("book123");
       const response = await fetch(
         `${BACKEND_API_URL}/publishers/${publisherId}`
@@ -25,50 +32,54 @@ export const PbPublishersDetail = () => {
       const publisher = await response.json();
       console.log(publisher);
       setPublisher(publisher);
+      setLoading(false);
     };
     fetchPublisher();
   }, [publisherId]);
 
   return (
     <Container>
-      <Card>
-        <CardContent>
-          <IconButton component={Link} sx={{ mr: 3 }} to={`/published_books`}>
-            <ArrowBackIcon />
-          </IconButton>{" "}
-          <h1>Publisher Details</h1>
-          <p>Publisher Name: {publisher?.name}</p>
-          <p>Publisher Headquarter: {publisher?.headquarter}</p>
-          <p>Publisher establishment date: {publisher?.established}</p>
-          <p>Total Copies Sold: {publisher?.total_copies_sold}</p>
-          <p>Books published:</p>
-          <ul>
-            {publisher?.publishing_details?.map((data: PublishedBooks) => (
-              <li>
-                Title: {data.book.name} by {data.book.author.first_name}{" "}
-                {data.book.author.last_name} in {data.year}
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-        <CardActions>
-          <IconButton
-            component={Link}
-            sx={{ mr: 3 }}
-            to={`/publishers/${publisherId}/edit`}
-          >
-            <EditIcon />
-          </IconButton>
+      {loading && <CircularProgress />}
+      {!loading && (
+        <Card>
+          <CardContent>
+            <IconButton component={Link} sx={{ mr: 3 }} to={`/published_books`}>
+              <ArrowBackIcon />
+            </IconButton>{" "}
+            <h1>Publisher Details</h1>
+            <p>Publisher Name: {publisher?.name}</p>
+            <p>Publisher Headquarter: {publisher?.headquarter}</p>
+            <p>Publisher establishment date: {publisher?.established}</p>
+            <p>Total Copies Sold: {publisher?.total_copies_sold}</p>
+            <p>Books published:</p>
+            <ul>
+              {publisher?.publishing_details?.map((data: PublishedBooks) => (
+                <li>
+                  Title: {data.book.name} by {data.book.author.first_name}{" "}
+                  {data.book.author.last_name} in {data.year}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+          <CardActions>
+            <IconButton
+              component={Link}
+              sx={{ mr: 3 }}
+              to={`/publishers/${publisherId}/edit`}
+            >
+              <EditIcon />
+            </IconButton>
 
-          <IconButton
-            component={Link}
-            sx={{ mr: 3 }}
-            to={`/publishers/${publisherId}/delete`}
-          >
-            <DeleteForeverIcon sx={{ color: "red" }} />
-          </IconButton>
-        </CardActions>
-      </Card>
+            <IconButton
+              component={Link}
+              sx={{ mr: 3 }}
+              to={`/publishers/${publisherId}/delete`}
+            >
+              <DeleteForeverIcon sx={{ color: "red" }} />
+            </IconButton>
+          </CardActions>
+        </Card>
+      )}
     </Container>
   );
 };
