@@ -48,6 +48,27 @@ export const PublishersShowAll = () => {
       });
   }, []);
 
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+
+    setLoading(true);
+    fetch(`${BACKEND_API_URL}/publishers/?page=${newPage}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setPublishers(data);
+        setLoading(false);
+      });
+  };
+
+  const pageNumbers = [];
+  for (
+    let i = Math.max(1, currentPage - 2);
+    i <= Math.min(totalPages, currentPage + 2);
+    i++
+  ) {
+    pageNumbers.push(i);
+  }
+
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -84,7 +105,43 @@ export const PublishersShowAll = () => {
       {!loading && publishers.length === 0 && <p>No publishers found</p>}
       {!loading && (
         <Toolbar>
-          <IconButton
+          <div>
+            {currentPage > 1 && (
+              <button onClick={() => handlePageChange(currentPage - 1)}>
+                Previous
+              </button>
+            )}
+            {pageNumbers[0] > 1 && (
+              <>
+                <button onClick={() => handlePageChange(1)}>1</button>
+                {pageNumbers[0] > 2 && <span>...</span>}
+              </>
+            )}
+            {pageNumbers.map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
+              <>
+                {pageNumbers[pageNumbers.length - 1] < totalPages - 2 && (
+                  <span>...</span>
+                )}
+                <button onClick={() => handlePageChange(totalPages)}>
+                  {totalPages}
+                </button>
+              </>
+            )}
+            {currentPage < totalPages && (
+              <button onClick={() => handlePageChange(currentPage + 1)}>
+                Next
+              </button>
+            )}
+          </div>
+          {/* <IconButton
             onClick={handlePrevPage}
             style={{ marginRight: "370px" }}
             component={Link}
@@ -95,13 +152,13 @@ export const PublishersShowAll = () => {
             <Tooltip title="Previous">
               <ArrowBackIosIcon sx={{ color: "black" }} />
             </Tooltip>
-          </IconButton>
+          </IconButton> */}
           <IconButton component={Link} sx={{ mr: 0 }} to={`/publishers/add`}>
             <Tooltip title="Add a new publisher" arrow>
               <AddIcon color="primary" />
             </Tooltip>
           </IconButton>
-          <IconButton
+          {/* <IconButton
             style={{ marginLeft: "370px" }}
             onClick={handleNextPage}
             component={Link}
@@ -112,7 +169,7 @@ export const PublishersShowAll = () => {
             <Tooltip title="Next">
               <ArrowForwardIosIcon sx={{ color: "black" }} />
             </Tooltip>
-          </IconButton>
+          </IconButton> */}
         </Toolbar>
       )}
       {!loading && publishers.length > 0 && (

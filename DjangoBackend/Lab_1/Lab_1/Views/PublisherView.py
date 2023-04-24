@@ -145,8 +145,7 @@ class AuthorsByAvrBooks(APIView):
 
 class BooksByNrOfBooksByAuthors(APIView):
     def get(self, request, format=None):
-        # nrOfPublications = Publisher.objects.filter(established__year__gt=1928).annotate(num_published=Count('books')).filter(num_published__gt=5).order_by('num_published')
-        nrOfPublications = Publisher.objects.all()
+        nrOfPublications = Publisher.objects.filter(established__year__gt=1928).annotate(num_published=Count('books')).filter(num_published__gt=5).order_by('num_published')
         # print(nrOfPublications.values())
         paginator = Paginator(nrOfPublications, 10)
         page_number = request.GET.get('page')
