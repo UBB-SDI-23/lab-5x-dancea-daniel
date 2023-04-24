@@ -52,8 +52,8 @@ export const PublishedBooksShowAll = () => {
 
   const pageNumbers = [];
   for (
-    let i = Math.max(1, currentPage - 2);
-    i <= Math.min(totalPages, currentPage + 2);
+    let i = Math.max(1, currentPage - 5);
+    i <= Math.min(totalPages, currentPage + 5);
     i++
   ) {
     pageNumbers.push(i);
@@ -115,11 +115,41 @@ export const PublishedBooksShowAll = () => {
             {pageNumbers[0] > 1 && (
               <>
                 <button onClick={() => handlePageChange(1)}>1</button>
-                {pageNumbers[0] > 2 && <span>...</span>}
+                {/* {pageNumbers[0] > 2 && <span>...</span>} */}
+                {pageNumbers[0] > 2 && (
+                  <>
+                    <button onClick={() => handlePageChange(2)}>2</button>
+                    {pageNumbers[0] > 3 && (
+                      <>
+                        <button onClick={() => handlePageChange(3)}>3</button>
+                        {pageNumbers[0] > 4 && (
+                          <>
+                            <button onClick={() => handlePageChange(4)}>
+                              4
+                            </button>
+                            {pageNumbers[0] > 5 && (
+                              <>
+                                <button onClick={() => handlePageChange(5)}>
+                                  5
+                                </button>
+                                {pageNumbers[0] > 5 && <span>...</span>}
+                              </>
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
               </>
             )}
             {pageNumbers.map((pageNumber) => (
               <button
+                style={{
+                  margin: "3px",
+                  backgroundColor: currentPage === pageNumber ? "grey" : "",
+                  pointerEvents: currentPage === pageNumber ? "none" : "auto",
+                }}
                 key={pageNumber}
                 onClick={() => handlePageChange(pageNumber)}
               >
@@ -128,8 +158,45 @@ export const PublishedBooksShowAll = () => {
             ))}
             {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
               <>
-                {pageNumbers[pageNumbers.length - 1] < totalPages - 2 && (
-                  <span>...</span>
+                {pageNumbers[pageNumbers.length - 2] < totalPages - 2 && (
+                  <>
+                    {pageNumbers[pageNumbers.length - 3] < totalPages - 3 && (
+                      <>
+                        {pageNumbers[pageNumbers.length - 4] <
+                          totalPages - 4 && (
+                          <>
+                            {pageNumbers[pageNumbers.length - 5] <
+                              totalPages - 5 && (
+                              <>
+                                {pageNumbers[pageNumbers.length - 5] <
+                                  totalPages - 6 && <span>...</span>}
+                                <button
+                                  onClick={() =>
+                                    handlePageChange(totalPages - 4)
+                                  }
+                                >
+                                  {totalPages - 4}
+                                </button>
+                              </>
+                            )}
+                            <button
+                              onClick={() => handlePageChange(totalPages - 3)}
+                            >
+                              {totalPages - 3}
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => handlePageChange(totalPages - 2)}
+                        >
+                          {totalPages - 2}
+                        </button>
+                      </>
+                    )}
+                    <button onClick={() => handlePageChange(totalPages - 1)}>
+                      {totalPages - 1}
+                    </button>
+                  </>
                 )}
                 <button onClick={() => handlePageChange(totalPages)}>
                   {totalPages}
