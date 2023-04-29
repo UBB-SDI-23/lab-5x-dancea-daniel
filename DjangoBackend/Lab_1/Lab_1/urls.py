@@ -19,9 +19,18 @@ from Lab_1 import views
 from Lab_1.Views import BookView, AuthorView, PublisherView
 from rest_framework.urlpatterns import format_suffix_patterns
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from Lab_1.Views.UserView import RegisterView, ConfirmRegistrationView
 
 urlpatterns = [
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    path('api/register/', RegisterView.as_view(), name='register'),
+    path('api/register/confirm/<str:confirmation_code>/', ConfirmRegistrationView.as_view(),
+         name='confirm_registration'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+
     path('api/admin/', admin.site.urls),
     path('api/books/', BookView.book_list.as_view()),
     path('api/books/autocomplete/', BookView.BooksAutoComple.as_view()),

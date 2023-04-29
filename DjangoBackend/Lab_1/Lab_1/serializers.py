@@ -2,17 +2,29 @@ from django.contrib.auth.models import User, Group
 from .models import Book, Author, Publisher, PublishedBooks
 from rest_framework import serializers
 
+from django.contrib.auth import get_user_model
+from Lab_1.models import UserProfile
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups']
+        fields = ['id', 'username', 'password']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
     class Meta:
-        model = Group
-        fields = ['url', 'name']
+        model = UserProfile
+        fields = ['id', 'user', 'bio', 'location', 'gender', 'marital_status', 'birthday']
+
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
